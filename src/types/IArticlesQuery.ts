@@ -1,7 +1,7 @@
-export default interface IArticlesQuery{
-    source: string,
-    dateFrom: number,
-    dateTo: number,
-    keyword: string,
-    page: string,
-  };
+export default interface IArticlesQuery {
+  dateFrom: string;
+  dateTo: string;
+  source: string;
+  keyword: string;
+  page: number;
+}

@@ -1,3 +1,4 @@
+import { Container } from '@mui/material';
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Footer from './components/Footer';
@@ -9,11 +10,13 @@ const App = () => {
   return (
     <BrowserRouter>
       <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/articles" element={<Articles />} />
-        <Route path="/*" element={<Home />} />
-      </Routes>
+      <Container maxWidth="xl" sx={{ border: 'solid 1px' }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/articles" element={<Articles />} />
+          <Route path="/*" element={<Home />} />
+        </Routes>
+      </Container>
       <Footer />
     </BrowserRouter>
   );
