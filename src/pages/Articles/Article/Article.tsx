@@ -2,7 +2,10 @@ import { Paper, Typography, Box, Link } from '@mui/material';
 import React, { useState } from 'react';
 import IArticle from '../../../types/IArticle';
 
-const Article: React.FC<{ article: IArticle }> = ({ article }) => {
+const Article: React.FC<{ article: IArticle; displayZHChecked: boolean }> = ({
+  article,
+  displayZHChecked,
+}) => {
   const [paperElevation, setPaperElevation] = useState(0);
 
   return (
@@ -16,11 +19,15 @@ const Article: React.FC<{ article: IArticle }> = ({ article }) => {
           <Typography>{article.date}</Typography>
         </Box>
         <Typography variant="h4">{article.title_en}</Typography>
-        <Typography variant="subtitle1">{article.title}</Typography>
+        {displayZHChecked && (
+          <Typography variant="subtitle1">{article.title}</Typography>
+        )}
 
         <Typography>{article.content_en}</Typography>
-        <Typography>{article.content}</Typography>
-        <Link href={article.url}>link</Link>
+        {displayZHChecked && <Typography>{article.content}</Typography>}
+        <Link href={article.url} target="_blank">
+          link
+        </Link>
       </Paper>
     </div>
   );
