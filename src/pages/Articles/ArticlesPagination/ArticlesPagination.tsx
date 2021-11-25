@@ -3,12 +3,17 @@ import Button from '@mui/material/Button';
 import Pagination from '@mui/material/Pagination';
 import TextField from '@mui/material/TextField';
 import React from 'react';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
+import {
+  fetchArticles,
+  selectArticlesTotalPages,
+} from '../../../store/slices/articleSlice';
 import IArticlesQuery from '../../../types/IArticlesQuery';
 
 const ArticlesPagination: React.FC<{ query: IArticlesQuery; setQuery: any }> =
   ({ query, setQuery }) => {
-    // const totalPage = useAppSelector(selectTotalPage);
-    const totalPage = 2;
+    const totalPage = useAppSelector(selectArticlesTotalPages);
+    const dispatch = useAppDispatch();
     const { page } = query;
 
     const handlePageChange = (
@@ -20,7 +25,7 @@ const ArticlesPagination: React.FC<{ query: IArticlesQuery; setQuery: any }> =
         page: value,
       };
       setQuery(newQuery);
-      console.log(newQuery);
+      dispatch(fetchArticles(newQuery));
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -34,7 +39,7 @@ const ArticlesPagination: React.FC<{ query: IArticlesQuery; setQuery: any }> =
           page: pageNum,
         };
         setQuery(newQuery);
-        console.log(newQuery);
+        dispatch(fetchArticles(newQuery));
       }
     };
 

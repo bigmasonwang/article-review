@@ -1,17 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { getArticles } from '../../services/articles';
+import IArticle from '../../types/IArticle';
 import IArticlesQuery from '../../types/IArticlesQuery';
-
-interface IArticle {
-  date: number;
-  url: string;
-  title: string;
-  title_en: string;
-  content: string;
-  content_en: string;
-  source: string;
-}
 
 interface IFetchArticlesRes {
   articles: IArticle[];

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Divider, Grid, Typography } from '@mui/material';
 import ArticleFilter from './ArticlesFilter';
 import ArticlesDisplay from './ArticlesDisplay';
 import IArticlesQuery from '../../types/IArticlesQuery';
 import ArticlesPagination from './ArticlesPagination';
+import { useAppDispatch } from '../../hooks';
+import { fetchArticles } from '../../store/slices/articleSlice';
 
 const Articles = () => {
   const articlesQuery = {
@@ -14,6 +16,18 @@ const Articles = () => {
     page: 1,
   };
   const [query, setQuery] = useState<IArticlesQuery>(articlesQuery);
+
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    const _query = {
+      dateFrom: '',
+      dateTo: '',
+      source: '',
+      keyword: '',
+      page: 1,
+    };
+    dispatch(fetchArticles(_query));
+  }, [dispatch]);
 
   return (
     <Box>

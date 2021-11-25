@@ -17,6 +17,8 @@ import {
 } from '@mui/material';
 import articleSources from '../../../constants/articleSources';
 import IArticlesQuery from '../../../types/IArticlesQuery';
+import { useAppDispatch } from '../../../hooks';
+import { fetchArticles } from '../../../store/slices/articleSlice';
 
 const ArticleFilter: React.FC<{ query: IArticlesQuery; setQuery: any }> = ({
   query,
@@ -28,6 +30,8 @@ const ArticleFilter: React.FC<{ query: IArticlesQuery; setQuery: any }> = ({
   const [dateTo, setDateTo] = useState<Date | null>(new Date(Date.now()));
   const [source, setSource] = useState('');
   const [keyword, setKeyword] = useState('');
+
+  const dispatch = useAppDispatch();
 
   const handleDateFromChange = (newValue: Date | null) => {
     setDateFrom(newValue);
@@ -85,7 +89,7 @@ const ArticleFilter: React.FC<{ query: IArticlesQuery; setQuery: any }> = ({
   };
 
   const handleSearch = () => {
-    console.log(query);
+    dispatch(fetchArticles(query));
   };
 
   return (
