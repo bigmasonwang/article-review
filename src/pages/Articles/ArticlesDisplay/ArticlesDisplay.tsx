@@ -1,8 +1,8 @@
-import { Box, FormControlLabel, Switch } from '@mui/material';
+import { Box, Divider, FormControlLabel, Switch } from '@mui/material';
 import React, { useState } from 'react';
 import { useAppSelector } from '../../../hooks';
 import { selectArticles } from '../../../store/slices/articleSlice';
-import Article from '../Article';
+import Article from '../../../components/Article';
 
 const ArticlesDisplay = () => {
   const articles = useAppSelector(selectArticles);
@@ -29,8 +29,9 @@ const ArticlesDisplay = () => {
       </Box>
 
       {articles.map((article) => (
-        <Box key={article.title} sx={{ m: 2 }}>
+        <Box key={article._id} sx={{ m: 2 }}>
           <Article article={article} displayZHChecked={displayZHChecked} />
+          <Divider sx={{ m: 2 }} />
         </Box>
       ))}
     </>

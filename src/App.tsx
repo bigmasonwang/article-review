@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import Articles from './pages/Articles';
+import ArticlesCollection from './pages/ArticlesCollection';
 import Home from './pages/Home';
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/articles" element={<Articles />} />
+          <Route path="/collection" element={<ArticlesCollection />} />
           <Route path="/*" element={<Home />} />
         </Routes>
       </Container>

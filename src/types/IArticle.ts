@@ -1,4 +1,5 @@
 export default interface IArticle {
+  _id: string
   date: number;
   url: string;
   title: string;
