@@ -38,7 +38,7 @@ const Article: React.FC<{ article: IArticle; displayZHChecked: boolean }> = ({
 
         {articleInCollection ? (
           <Button
-            variant="outlined"
+            variant="contained"
             startIcon={<PlaylistRemoveIcon />}
             onClick={handleRemoveButtonOnClick}
             sx={{ width: 120 }}

@@ -11,7 +11,7 @@ const Articles = () => {
   const articlesQuery = {
     dateFrom: '',
     dateTo: '',
-    source: '',
+    sources: [],
     keyword: '',
     page: 1,
   };
@@ -22,7 +22,7 @@ const Articles = () => {
     const _query = {
       dateFrom: '',
       dateTo: '',
-      source: '',
+      sources: [],
       keyword: '',
       page: 1,
     };

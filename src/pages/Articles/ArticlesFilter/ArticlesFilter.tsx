@@ -14,6 +14,8 @@ import {
   Select,
   SelectChangeEvent,
   Button,
+  OutlinedInput,
+  Chip,
 } from '@mui/material';
 import articleSources from '../../../constants/articleSources';
 import IArticlesQuery from '../../../types/IArticlesQuery';
@@ -24,11 +26,9 @@ const ArticleFilter: React.FC<{ query: IArticlesQuery; setQuery: any }> = ({
   query,
   setQuery,
 }) => {
-  const [dateFrom, setDateFrom] = useState<Date | null>(
-    new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-  );
-  const [dateTo, setDateTo] = useState<Date | null>(new Date(Date.now()));
-  const [source, setSource] = useState('');
+  const [dateFrom, setDateFrom] = useState<Date | null>(null);
+  const [dateTo, setDateTo] = useState<Date | null>( null );
+  const [sources, setSources] = useState<string[]>([]);
   const [keyword, setKeyword] = useState('');
 
   const dispatch = useAppDispatch();
@@ -36,11 +36,11 @@ const ArticleFilter: React.FC<{ query: IArticlesQuery; setQuery: any }> = ({
   const handleDateFromChange = (newValue: Date | null) => {
     setDateFrom(newValue);
     let _dateFrom = '';
-    if (dateFrom) {
-      _dateFrom = `${dateFrom.getFullYear()}${(
+    if (newValue) {
+      _dateFrom = `${newValue.getFullYear()}${(
         '0' +
-        (dateFrom.getMonth() + 1)
-      ).slice(-2)}${('0' + dateFrom.getDate()).slice(-2)}`;
+        (newValue.getMonth() + 1)
+      ).slice(-2)}${('0' + newValue.getDate()).slice(-2)}`;
     }
     setQuery({
       ...query,
@@ -51,10 +51,11 @@ const ArticleFilter: React.FC<{ query: IArticlesQuery; setQuery: any }> = ({
   const handleDateToChange = (newValue: Date | null) => {
     setDateTo(newValue);
     let _dateTo = '';
-    if (dateTo) {
-      _dateTo = `${dateTo.getFullYear()}${('0' + (dateTo.getMonth() + 1)).slice(
-        -2
-      )}${('0' + dateTo.getDate()).slice(-2)}`;
+    if (newValue) {
+      _dateTo = `${newValue.getFullYear()}${(
+        '0' +
+        (newValue.getMonth() + 1)
+      ).slice(-2)}${('0' + newValue.getDate()).slice(-2)}`;
     }
     setQuery({
       ...query,
@@ -62,11 +63,15 @@ const ArticleFilter: React.FC<{ query: IArticlesQuery; setQuery: any }> = ({
     });
   };
 
-  const handleSourceChange = (event: SelectChangeEvent) => {
-    setSource(event.target.value);
+  const handleSourcesChange = (event: SelectChangeEvent<typeof sources>) => {
+    const {
+      target: { value },
+    } = event;
+    const _sources = typeof value === 'string' ? value.split(',') : value;
+    setSources(_sources);
     setQuery({
       ...query,
-      source: event.target.value,
+      sources: _sources,
     });
   };
 
@@ -79,12 +84,16 @@ const ArticleFilter: React.FC<{ query: IArticlesQuery; setQuery: any }> = ({
   };
 
   const handleReset = () => {
-    setSource('');
+    setDateFrom(null);
+    setDateTo(null);
+    setSources([]);
     setKeyword('');
     setQuery({
-      ...query,
-      source: '',
+      dateFrom: '',
+      dateTo: '',
+      sources: [],
       keyword: '',
+      page: 1,
     });
   };
 
@@ -116,22 +125,32 @@ const ArticleFilter: React.FC<{ query: IArticlesQuery; setQuery: any }> = ({
       <Divider sx={{ m: 2 }} />
 
       <Typography variant="h5">Source</Typography>
-      <FormControl size="small" fullWidth>
-        <InputLabel id="location-selector">Select City</InputLabel>
-        <Select
-          label="Select Source"
-          id="source-selector"
-          value={source}
-          onChange={handleSourceChange}
-          size="medium"
-        >
-          {articleSources.map((source) => (
-            <MenuItem value={source} key={source}>
-              {source}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <div>
+        <FormControl fullWidth>
+          <InputLabel id="multiple-chip-label">Select</InputLabel>
+          <Select
+            labelId="multiple-chip-label"
+            id="multiple-chip"
+            multiple
+            value={sources}
+            onChange={handleSourcesChange}
+            input={<OutlinedInput id="select-multiple-chip" label="source" />}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} />
+                ))}
+              </Box>
+            )}
+          >
+            {articleSources.map((source) => (
+              <MenuItem key={source} value={source}>
+                {source}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
       <Divider sx={{ m: 2 }} />
 
       <Typography variant="h5">Keyword</Typography>
