@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { signupService } from '../../services/users';
 import { useAppDispatch } from '../../hooks';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { setCredentials } from '../../store/slices/authSlice';
 import { Alert } from '@mui/material';
 import axios from 'axios';
@@ -39,7 +39,6 @@ export default function SignUp() {
   const [successMsg, setSuccessMsg] = useState('');
   const [failMsg, setFailMsg] = useState('');
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
