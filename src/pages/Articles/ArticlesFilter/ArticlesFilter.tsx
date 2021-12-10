@@ -27,7 +27,7 @@ const ArticleFilter: React.FC<{ query: IArticlesQuery; setQuery: any }> = ({
   setQuery,
 }) => {
   const [dateFrom, setDateFrom] = useState<Date | null>(null);
-  const [dateTo, setDateTo] = useState<Date | null>( null );
+  const [dateTo, setDateTo] = useState<Date | null>(null);
   const [sources, setSources] = useState<string[]>([]);
   const [keyword, setKeyword] = useState('');
 
