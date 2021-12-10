@@ -33,6 +33,7 @@ const signupValidationSchema = yup.object().shape({
     .required('password is required!')
     .min(6, 'password is too short - should be 6 chars minimum!')
     .max(40, 'password is too long - should be 40 chars maximum!'),
+  invitationCode: yup.string().required('invitation code is required!'),
 });
 
 export default function SignUp() {
@@ -45,6 +46,7 @@ export default function SignUp() {
       userName: '',
       email: '',
       password: '',
+      invitationCode: '',
     },
     validationSchema: signupValidationSchema,
     onSubmit: async (values) => {
@@ -106,6 +108,7 @@ export default function SignUp() {
                 fullWidth
                 id="email"
                 label="Email"
+                type="email"
                 name="email"
                 value={formik.values.email}
                 onChange={formik.handleChange}
@@ -126,6 +129,24 @@ export default function SignUp() {
                   formik.touched.password && Boolean(formik.errors.password)
                 }
                 helperText={formik.touched.password && formik.errors.password}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                name="invitationCode"
+                label="Invitation Code"
+                type="text"
+                id="invitationCode"
+                value={formik.values.invitationCode}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.invitationCode &&
+                  Boolean(formik.errors.invitationCode)
+                }
+                helperText={
+                  formik.touched.invitationCode && formik.errors.invitationCode
+                }
               />
             </Grid>
           </Grid>
