@@ -11,7 +11,7 @@ const ArticlesCollection = () => {
       collections
       {articleCollection.map((article) => (
         <Box key={article._id} sx={{ m: 2 }}>
-          <Article article={article} displayZHChecked={false} />
+          <Article article={article} />
           <Divider sx={{ m: 2 }} />
         </Box>
       ))}

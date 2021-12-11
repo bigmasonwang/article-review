@@ -32,7 +32,7 @@ const Header = () => {
         sx={{ fontSize: 24 }}
         underline="none"
       >
-        <Button sx={{ fontSize: 24 }}>Incantare Investment</Button>
+        <Button sx={{ fontSize: 24 }}>Home</Button>
       </Link>
 
       <Link

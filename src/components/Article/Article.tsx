@@ -9,13 +9,13 @@ import {
   removeArticle,
   selectArticlesCollection,
 } from '../../store/slices/articleSlice';
+import { selectShowZH, selectShowEN } from '../../store/slices/settingSlice';
 
-const Article: React.FC<{ article: IArticle; displayZHChecked: boolean }> = ({
-  article,
-  displayZHChecked,
-}) => {
+const Article: React.FC<{ article: IArticle }> = ({ article }) => {
   const dispatch = useAppDispatch();
   const articleCollection = useAppSelector(selectArticlesCollection);
+  const displayZHChecked = useAppSelector(selectShowZH);
+  const displayENChecked = useAppSelector(selectShowEN);
 
   let articleInCollection = articleCollection.some(
     (a) => a._id === article._id
@@ -56,12 +56,13 @@ const Article: React.FC<{ article: IArticle; displayZHChecked: boolean }> = ({
           </Button>
         )}
       </Box>
-      <Typography variant="h4">{article.title_en}</Typography>
-      {displayZHChecked && (
-        <Typography variant="subtitle1">{article.title}</Typography>
+      <Typography variant="h4">{article.title}</Typography>
+      {displayENChecked && (
+        <Typography variant="h5">{article.title_en}</Typography>
       )}
 
-      <Typography>{article.content_en}</Typography>
+      {displayENChecked && <Typography>{article.content_en}</Typography>}
+
       {displayZHChecked && <Typography>{article.content}</Typography>}
       <Link href={article.url} target="_blank">
         link

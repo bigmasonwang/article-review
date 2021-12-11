@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from './components/Header';
+import LanguageSetting from './components/LanguageSetting';
 import Articles from './pages/Articles';
 import ArticlesCollection from './pages/ArticlesCollection';
 import Home from './pages/Home';
@@ -13,6 +14,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Header />
+      <LanguageSetting />
       <Container maxWidth="xl" sx={{ border: 'solid 1px' }}>
         <Routes>
           <Route path="/" element={<Home />} />
