@@ -1,4 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
+import IArticleEditInfo from '../types/IArticleEditInfo';
 import IArticlesQuery from '../types/IArticlesQuery';
 import request from '../utils/request';
 
@@ -10,6 +11,16 @@ export const getArticles = async (query: IArticlesQuery) => {
   const config: AxiosRequestConfig = {
     url: `articles?page=${query.page}${sourcesQuery}&dateFrom=${query.dateFrom}&dateTo=${query.dateTo}&keyword=${query.keyword}`,
     method: 'GET',
+  };
+
+  return request(config);
+};
+
+export const postArticleTranslation = async (info: IArticleEditInfo) => {
+  const config: AxiosRequestConfig = {
+    url: `articles/${info._id}/translation`,
+    method: 'POST',
+    data: { title_en: info.title_en, content_en: info.content_en },
   };
 
   return request(config);

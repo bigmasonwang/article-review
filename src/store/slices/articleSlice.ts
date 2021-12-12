@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '..';
-import { getArticles } from '../../services/articles';
+import { getArticles, postArticleTranslation } from '../../services/articles';
 import IArticle from '../../types/IArticle';
+import IArticleEditInfo from '../../types/IArticleEditInfo';
 import IArticlesQuery from '../../types/IArticlesQuery';
 import {
   put as localStoragePut,
@@ -18,7 +19,8 @@ interface InitialState {
   articles: IArticle[];
   articlesCollection: IArticle[];
   articlesTotalPages: number;
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  fetchArticlesStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
+  editArticleStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 const initialState: InitialState = {
@@ -26,7 +28,8 @@ const initialState: InitialState = {
   articlesCollection:
     (JSON.parse(localStorageGet('articles')) as IArticle[]) || [],
   articlesTotalPages: 1,
-  status: 'idle',
+  fetchArticlesStatus: 'idle',
+  editArticleStatus: 'idle',
 };
 
 export const fetchArticles = createAsyncThunk(
@@ -37,14 +40,20 @@ export const fetchArticles = createAsyncThunk(
   }
 );
 
+export const editArticle = createAsyncThunk(
+  'articles/editArticles',
+  async (info: IArticleEditInfo) => {
+    const response = await postArticleTranslation(info);
+    return response.data as IArticle;
+  }
+);
+
 const articleSlice = createSlice({
   name: 'articles',
   initialState,
   reducers: {
     /**
      * Add an article to an array
-     * @param state
-     * @param action
      */
     addArticle(state, action: PayloadAction<IArticle>) {
       const article = action.payload;
@@ -60,8 +69,6 @@ const articleSlice = createSlice({
     },
     /**
      * Remove an article from the array
-     * @param state
-     * @param action
      */
     removeArticle(state, action: PayloadAction<IArticle>) {
       const article = action.payload;
@@ -74,15 +81,39 @@ const articleSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchArticles.pending, (state: InitialState) => {
-        state.status = 'loading';
+        state.fetchArticlesStatus = 'loading';
       })
       .addCase(fetchArticles.fulfilled, (state: InitialState, action) => {
-        state.status = 'succeeded';
+        state.fetchArticlesStatus = 'succeeded';
         state.articles = action.payload.articles;
         state.articlesTotalPages = action.payload.totalPages;
       })
       .addCase(fetchArticles.rejected, (state: InitialState) => {
-        state.status = 'failed';
+        state.fetchArticlesStatus = 'failed';
+      })
+      .addCase(editArticle.pending, (state: InitialState) => {
+        state.editArticleStatus = 'loading';
+      })
+      .addCase(editArticle.fulfilled, (state: InitialState, action) => {
+        state.editArticleStatus = 'succeeded';
+        const newArticle = action.payload;
+        const existingPost = state.articles.find(
+          (article) => article._id === newArticle._id
+        );
+        if (existingPost) {
+          existingPost.content_en = newArticle.content_en;
+          existingPost.title_en = newArticle.title_en;
+        }
+        // collection - localstorage
+        let articles = JSON.parse(localStorageGet('articles')) as IArticle[];
+        articles = articles.map((a) =>
+          a._id === newArticle._id ? newArticle : a
+        );
+        localStoragePut('articles', articles);
+        state.articlesCollection = articles;
+      })
+      .addCase(editArticle.rejected, (state: InitialState) => {
+        state.editArticleStatus = 'failed';
       });
   },
 });

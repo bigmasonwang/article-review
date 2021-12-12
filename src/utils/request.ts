@@ -1,5 +1,6 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { DEVELOPMENT_API_URL, PRODUCTION_API_URL } from "../constants/apiUrl";
+import axios, { AxiosRequestConfig } from 'axios';
+import { DEVELOPMENT_API_URL, PRODUCTION_API_URL } from '../constants/apiUrl';
+import { get as storageGet } from './localStorage';
 
 const getApiUrl = () => {
   const environment = process.env.NODE_ENV;
@@ -19,6 +20,9 @@ export default function request(options: AxiosRequestConfig) {
   const axiosInstance = axios.create({
     baseURL,
     timeout,
+    headers: {
+      'Authorization': JSON.parse(storageGet('token')),
+    },
   });
 
   return axiosInstance(options);
