@@ -1,5 +1,7 @@
+import IArticleComment from "./IArticleComment";
+
 export default interface IArticle {
-  _id: string
+  _id: string;
   date: number;
   url: string;
   title: string;
@@ -7,4 +9,5 @@ export default interface IArticle {
   content: string;
   content_en: string;
   source: string;
+  comments: IArticleComment[];
 }

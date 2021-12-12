@@ -1,7 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '..';
-import { getArticles, postArticleTranslation } from '../../services/articles';
+import {
+  getArticles,
+  postArticleTranslation,
+  postComment,
+} from '../../services/articles';
 import IArticle from '../../types/IArticle';
+import IArticleComment from '../../types/IArticleComment';
 import IArticleEditInfo from '../../types/IArticleEditInfo';
 import IArticlesQuery from '../../types/IArticlesQuery';
 import {
@@ -21,6 +26,7 @@ interface InitialState {
   articlesTotalPages: number;
   fetchArticlesStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
   editArticleStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
+  addCommentStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 const initialState: InitialState = {
@@ -30,6 +36,7 @@ const initialState: InitialState = {
   articlesTotalPages: 1,
   fetchArticlesStatus: 'idle',
   editArticleStatus: 'idle',
+  addCommentStatus: 'idle',
 };
 
 export const fetchArticles = createAsyncThunk(
@@ -41,9 +48,17 @@ export const fetchArticles = createAsyncThunk(
 );
 
 export const editArticle = createAsyncThunk(
-  'articles/editArticles',
+  'articles/editArticle',
   async (info: IArticleEditInfo) => {
     const response = await postArticleTranslation(info);
+    return response.data as IArticle;
+  }
+);
+
+export const addComment = createAsyncThunk(
+  'articles/addComment',
+  async (comment: IArticleComment) => {
+    const response = await postComment(comment);
     return response.data as IArticle;
   }
 );
@@ -114,6 +129,30 @@ const articleSlice = createSlice({
       })
       .addCase(editArticle.rejected, (state: InitialState) => {
         state.editArticleStatus = 'failed';
+      })
+      .addCase(addComment.pending, (state: InitialState) => {
+        state.addCommentStatus = 'loading';
+      })
+      .addCase(addComment.fulfilled, (state: InitialState, action) => {
+        state.addCommentStatus = 'succeeded';
+        const newArticle = action.payload;
+        const existingPost = state.articles.find(
+          (article) => article._id === newArticle._id
+        );
+        if (existingPost) {
+          existingPost.content_en = newArticle.content_en;
+          existingPost.title_en = newArticle.title_en;
+        }
+        // collection - localstorage
+        let articles = JSON.parse(localStorageGet('articles')) as IArticle[];
+        articles = articles.map((a) =>
+          a._id === newArticle._id ? newArticle : a
+        );
+        localStoragePut('articles', articles);
+        state.articlesCollection = articles;
+      })
+      .addCase(addComment.rejected, (state: InitialState) => {
+        state.addCommentStatus = 'failed';
       });
   },
 });

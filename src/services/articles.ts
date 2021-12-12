@@ -1,4 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
+import IArticleComment from '../types/IArticleComment';
 import IArticleEditInfo from '../types/IArticleEditInfo';
 import IArticlesQuery from '../types/IArticlesQuery';
 import request from '../utils/request';
@@ -25,3 +26,13 @@ export const postArticleTranslation = async (info: IArticleEditInfo) => {
 
   return request(config);
 };
+
+export const postComment = async (comment: IArticleComment) => {
+  const config: AxiosRequestConfig = {
+    url: `articles/${comment.articleId}/comments`,
+    method: 'POST',
+    data: { text: comment.text },
+  };
+
+  return request(config);
+}

@@ -4,17 +4,20 @@ import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import AddCommentIcon from '@mui/icons-material/AddComment';
 import React, { useState } from 'react';
 import IArticle from '../../types/IArticle';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
   addArticle,
+  addComment,
   editArticle,
   removeArticle,
   selectArticlesCollection,
 } from '../../store/slices/articleSlice';
 import { selectShowZH, selectShowEN } from '../../store/slices/settingSlice';
 import { LoadingButton } from '@mui/lab';
+import ArticleComment from '../ArticleComment';
 
 const Article: React.FC<{ article: IArticle }> = ({ article }) => {
   const dispatch = useAppDispatch();
@@ -24,6 +27,7 @@ const Article: React.FC<{ article: IArticle }> = ({ article }) => {
   const [editMode, setEditMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [contentEN, setContentEN] = useState(article.content_en);
+  const [comment, setComment] = useState('');
 
   let articleInCollection = articleCollection.some(
     (a) => a._id === article._id
@@ -62,43 +66,27 @@ const Article: React.FC<{ article: IArticle }> = ({ article }) => {
     setContentEN(event.target.value);
   };
 
+  const handleCommentPost = async (event: React.MouseEvent<HTMLElement>) => {
+    try {
+      setIsLoading(true);
+      await dispatch(addComment({ articleId: article._id, text: comment }));
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+      setComment('');
+    }
+  };
+
   return (
     <>
-      {editMode ? (
-        <>
-          <LoadingButton
-            // color="secondary"
-            onClick={handleSaveButtonOnclick}
-            loading={isLoading}
-            loadingPosition="start"
-            startIcon={<SaveIcon />}
-            variant="contained"
-            sx={{ width: 120 }}
-          >
-            Save
-          </LoadingButton>
-          <Button
-            variant="outlined"
-            startIcon={<CancelIcon />}
-            onClick={handleEditModeChange}
-            sx={{ width: 120 }}
-          >
-            Cancel
-          </Button>
-        </>
-      ) : (
-        <Button
-          variant="contained"
-          startIcon={<EditIcon />}
-          onClick={handleEditModeChange}
-          sx={{ width: 120 }}
-        >
-          Edit
-        </Button>
-      )}
-
       <Box display="flex" justifyContent="space-between">
-        <Typography>{article.source}</Typography>
+        <Box>
+          <Typography>{article.source}</Typography>
+          <Link href={article.url} target="_blank">
+            link
+          </Link>
+        </Box>
         <Typography>{article.date}</Typography>
         {articleInCollection ? (
           <Button
@@ -141,10 +129,64 @@ const Article: React.FC<{ article: IArticle }> = ({ article }) => {
           onChange={hadleContentENChange}
         />
       )}
+      {editMode ? (
+        <>
+          <LoadingButton
+            // color="secondary"
+            onClick={handleSaveButtonOnclick}
+            loading={isLoading}
+            loadingPosition="start"
+            startIcon={<SaveIcon />}
+            variant="contained"
+            sx={{ width: 120 }}
+          >
+            Save
+          </LoadingButton>
+          <Button
+            variant="outlined"
+            startIcon={<CancelIcon />}
+            onClick={handleEditModeChange}
+            sx={{ width: 120 }}
+          >
+            Cancel
+          </Button>
+        </>
+      ) : (
+        <Button
+          variant="contained"
+          startIcon={<EditIcon />}
+          onClick={handleEditModeChange}
+          sx={{ width: 120 }}
+        >
+          Edit
+        </Button>
+      )}
 
-      <Link href={article.url} target="_blank">
-        link
-      </Link>
+      {article.comments.map((comment) => (
+        <Box key={comment._id}>
+          <ArticleComment comment={comment} />
+        </Box>
+      ))}
+
+      <Box sx={{ mt: 2 }}>
+        <TextField
+          id="comment-edit"
+          label="Add Comment"
+          size="small"
+          value={comment}
+          sx={{ width: 400 }}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <LoadingButton
+          variant="outlined"
+          loading={isLoading}
+          loadingPosition="start"
+          startIcon={<AddCommentIcon />}
+          onClick={handleCommentPost}
+        >
+          Post
+        </LoadingButton>
+      </Box>
     </>
   );
 };
