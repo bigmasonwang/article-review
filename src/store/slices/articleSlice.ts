@@ -140,8 +140,7 @@ const articleSlice = createSlice({
           (article) => article._id === newArticle._id
         );
         if (existingPost) {
-          existingPost.content_en = newArticle.content_en;
-          existingPost.title_en = newArticle.title_en;
+          existingPost.comments = newArticle.comments;
         }
         // collection - localstorage
         let articles = JSON.parse(localStorageGet('articles')) as IArticle[];
