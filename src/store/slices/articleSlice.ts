@@ -136,19 +136,19 @@ const articleSlice = createSlice({
       .addCase(addComment.fulfilled, (state: InitialState, action) => {
         state.addCommentStatus = 'succeeded';
         const newArticle = action.payload;
-        const existingPost = state.articles.find(
-          (article) => article._id === newArticle._id
-        );
-        if (existingPost) {
-          existingPost.comments = newArticle.comments;
-        }
-        // collection - localstorage
-        let articles = JSON.parse(localStorageGet('articles')) as IArticle[];
-        articles = articles.map((a) =>
+        // articles
+        state.articles = state.articles.map((a) =>
           a._id === newArticle._id ? newArticle : a
         );
-        localStoragePut('articles', articles);
-        state.articlesCollection = articles;
+        // articles collection - localstorage
+        let articlesCollection = JSON.parse(
+          localStorageGet('articles')
+        ) as IArticle[];
+        articlesCollection = articlesCollection.map((a) =>
+          a._id === newArticle._id ? newArticle : a
+        );
+        localStoragePut('articles', articlesCollection);
+        state.articlesCollection = articlesCollection;
       })
       .addCase(addComment.rejected, (state: InitialState) => {
         state.addCommentStatus = 'failed';
